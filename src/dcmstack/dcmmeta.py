@@ -1563,7 +1563,7 @@ class NiftiWrapper(object):
 
         Parameters
         ----------
-        dcm_data : dicom.dataset.Dataset
+        dcm_data : pydicom.dataset.Dataset
             The DICOM dataset to convert into a NiftiWrapper.
 
         meta_dict : dict

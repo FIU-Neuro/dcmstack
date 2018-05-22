@@ -2,7 +2,7 @@
 Stack DICOM datasets into volumes. The contents of this module are imported
 into the package namespace.
 """
-import warnings, re, dicom
+import warnings, re, pydicom
 from copy import deepcopy
 import nibabel as nb
 from nibabel.nifti1 import Nifti1Extensions
@@ -286,7 +286,7 @@ class InvalidStackError(Exception):
         return 'The DICOM stack is not valid: %s' % self.msg
 
 class DicomOrdering(object):
-    '''Object defining an ordering for a set of dicom datasets. Create a
+    '''Object defining an ordering for a set of pydicom datasets. Create a
     DicomOrdering with the given DICOM element keyword.
 
     Parameters
@@ -495,7 +495,7 @@ class DicomStack(object):
 
         Parameters
         ----------
-        dcm : dicom.dataset.Dataset
+        dcm : pydicom.dataset.Dataset
             The data set being added to the stack
 
         meta : dict
@@ -1005,7 +1005,7 @@ class DicomStack(object):
 def parse_and_group(src_paths, group_by=default_group_keys, extractor=None,
                     force=False, warn_on_except=False,
                     close_tests=('ImageOrientationPatient',)):
-    '''Parse the given dicom files and group them together. Each group is
+    '''Parse the given pydicom files and group them together. Each group is
     stored as a (list) value in a dict where the key is a tuple of values
     corresponding to the keys in 'group_by'
 
@@ -1020,7 +1020,7 @@ def parse_and_group(src_paths, group_by=default_group_keys, extractor=None,
         will also be the key in the result dictionary.
 
     extractor : callable
-        Should take a dicom.dataset.Dataset and return a dictionary of the
+        Should take a pydicom.dataset.Dataset and return a dictionary of the
         extracted meta data.
 
     force : bool
@@ -1038,7 +1038,7 @@ def parse_and_group(src_paths, group_by=default_group_keys, extractor=None,
     -------
     groups : dict
         A dict mapping tuples of values (corresponding to 'group_by') to groups
-        of data sets. Each element in the list is a tuple containing the dicom
+        of data sets. Each element in the list is a tuple containing the pydicom
         object, the parsed meta data, and the filename.
     '''
     if extractor is None:
@@ -1050,7 +1050,7 @@ def parse_and_group(src_paths, group_by=default_group_keys, extractor=None,
     for dcm_path in src_paths:
         #Read the DICOM file
         try:
-            dcm = dicom.read_file(dcm_path, force=force)
+            dcm = pydicom.read_file(dcm_path, force=force)
         except Exception as e:
             if warn_on_except:
                 warnings.warn('Error reading file %s: %s' % (dcm_path, str(e)))
@@ -1123,7 +1123,7 @@ def stack_group(group, warn_on_except=False, **stack_args):
 
 def parse_and_stack(src_paths, group_by=default_group_keys, extractor=None,
                     force=False, warn_on_except=False, **stack_args):
-    '''Parse the given dicom files into a dictionary containing one or more
+    '''Parse the given pydicom files into a dictionary containing one or more
     DicomStack objects.
 
     Parameters
@@ -1137,7 +1137,7 @@ def parse_and_stack(src_paths, group_by=default_group_keys, extractor=None,
         will also be the key in the result dictionary.
 
     extractor : callable
-        Should take a dicom.dataset.Dataset and return a dictionary of the
+        Should take a pydicom.dataset.Dataset and return a dictionary of the
         extracted meta data.
 
     force : bool
